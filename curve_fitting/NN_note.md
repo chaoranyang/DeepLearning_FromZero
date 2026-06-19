@@ -12,14 +12,16 @@
 
 ### 1.1 符号定义
 
-- 输入：$x_i$ 表示第1层第 $i$ 个神经元的输入值（也是激活值）。
-- 权重：$w_{ji}^{(2)}$ 表示从第1层第 $i$ 个神经元到第2层第 $j$ 个神经元的权重。上标表示连接的目标层。
-- 偏置：$b_j^{(2)}$ 表示第2层第 $j$ 个神经元的偏置。
+- 输入： $x_i$ 表示第1层第 $i$ 个神经元的输入值（也是激活值）。
+- 权重： $w_{ji}^{(2)}$ 表示从第1层第 $i$ 个神经元到第2层第 $j$ 个神经元的权重。上标表示连接的目标层。
+- 偏置： $b_j^{(2)}$ 表示第2层第 $j$ 个神经元的偏置。
 - 加权输入：
-  $$
-  z_j^{(2)} = \sum_{i=1}^{N_1} w_{ji}^{(2)} x_i + b_j^{(2)}
-  $$
-- 激活值：$a_j^{(2)} = \sigma(z_j^{(2)})$ ，其中 $\sigma$ 是激活函数（如 Sigmoid）。
+  
+$$
+z_j^{(2)} = \sum_{i=1}^{N_1} w_{ji}^{(2)} x_i + b_j^{(2)}
+$$
+  
+- 激活值： $a_j^{(2)} = \sigma(z_j^{(2)})$ ，其中 $\sigma$ 是激活函数（如 Sigmoid）。
 
 类似地，输出层定义为：
 
@@ -85,7 +87,7 @@ $$
 
 ### 2.2 隐藏层权重 $w_{ji}^{(2)}$
 
-此时，$w_{ji}^{(2)}$ 通过影响 $z_j^{(2)}$ 进而影响所有输出层神经元。
+此时, $w_{ji}^{(2)}$ 通过影响 $z_j^{(2)}$ 进而影响所有输出层神经元。
 
 $$
 \frac{\partial \mathcal{L}}{\partial w_{ji}^{(2)}} = \frac{\partial \mathcal{L}}{\partial z_j^{(2)}} \cdot \frac{\partial z_j^{(2)}}{\partial w_{ji}^{(2)}} = \delta_j^{(2)} x_i
@@ -154,33 +156,40 @@ $$
 ### 4.1 四个基本方程（分量形式）
 
 1. **输出层误差**：
-   $$
-   \boxed{\delta_i^{(L)} = \frac{\partial \mathcal{L}}{\partial a_i^{(L)}} \sigma'(z_i^{(L)})}
-   $$
+   
+$$
+\boxed{\delta_i^{(L)} = \frac{\partial \mathcal{L}}{\partial a_i^{(L)}} \sigma'(z_i^{(L)})}
+$$
+   
    具体形式依赖损失函数，如平方损失时 $\partial \mathcal{L}/\partial a_i^{(L)} = -(y_i - a_i^{(L)})$ 。
 
 2. **误差反向传播**（ $l = L-1, L-2, \dots, 2$ ）：
-   $$
-   \boxed{\delta_i^{(l)} = \left( \sum_{k=1}^{N_{l+1}} \delta_k^{(l+1)} w_{ki}^{(l+1)} \right) \sigma'(z_i^{(l)})}
-   $$
+
+$$
+\boxed{\delta_i^{(l)} = \left( \sum_{k=1}^{N_{l+1}} \delta_k^{(l+1)} w_{ki}^{(l+1)} \right) \sigma'(z_i^{(l)})}
+$$
+
    证明：因为 $z_i^{(l)}$ 影响下一层所有 $z_k^{(l+1)}$ ，链式法则展开：
 
-   $$
-   \delta_i^{(l)} = \frac{\partial \mathcal{L}}{\partial z_i^{(l)}} 
-    = \sum_{k=1}^{N_{l+1}} \frac{\partial \mathcal{L}}{\partial z_k^{(l+1)}} \cdot \frac{\partial z_k^{(l+1)}}{\partial a_i^{(l)}} \cdot \frac{\partial a_i^{(l)}}{\partial z_i^{(l)}} 
-    = \sum_{k=1}^{N_{l+1}} \delta_k^{(l+1)} \cdot w_{ki}^{(l+1)} \cdot \sigma'(z_i^{(l)})
-   $$
+$$
+\delta_i^{(l)} = \frac{\partial \mathcal{L}}{\partial z_i^{(l)}} 
+= \sum_{k=1}^{N_{l+1}} \frac{\partial \mathcal{L}}{\partial z_k^{(l+1)}} \cdot \frac{\partial z_k^{(l+1)}}{\partial a_i^{(l)}} \cdot \frac{\partial a_i^{(l)}}{\partial z_i^{(l)}} 
+= \sum_{k=1}^{N_{l+1}} \delta_k^{(l+1)} \cdot w_{ki}^{(l+1)} \cdot \sigma'(z_i^{(l)})
+$$
 
 3. **权重梯度**：
-   $$
-   \boxed{\frac{\partial \mathcal{L}}{\partial w_{ij}^{(l)}} = \delta_i^{(l)} a_j^{(l-1)}}
-   $$
+
+$$
+\boxed{\frac{\partial \mathcal{L}}{\partial w_{ij}^{(l)}} = \delta_i^{(l)} a_j^{(l-1)}}
+$$
+
    因为 $z_i^{(l)} = \sum_j w_{ij}^{(l)} a_j^{(l-1)} + b_i^{(l)}$ 。
 
 4. **偏置梯度**：
-   $$
-   \boxed{\frac{\partial \mathcal{L}}{\partial b_i^{(l)}} = \delta_i^{(l)}}
-   $$
+   
+$$
+\boxed{\frac{\partial \mathcal{L}}{\partial b_i^{(l)}} = \delta_i^{(l)}}
+$$
 
 ### 4.2 完整算法步骤
 
