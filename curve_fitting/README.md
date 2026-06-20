@@ -1,4 +1,6 @@
-# 神经网络从零实现 —— 曲线拟合
+# 神经网络从零实现 —— 曲线拟合  🌐[English Version](README_English.md)
+
+![任务效果](output.png)
 
 本项目使用纯 NumPy 实现了一个多层全连接神经网络，**不依赖任何深度学习框架**（如 PyTorch、TensorFlow）。通过反向传播（Backpropagation）和批量梯度下降（Batch Gradient Descent）训练网络，用于拟合带噪声的二次函数 $y = x^2$ ，旨在展示神经网络的拟合能力与底层实现细节。
 
