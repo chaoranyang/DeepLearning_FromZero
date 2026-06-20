@@ -6,7 +6,13 @@
 
 ---
 
-## 📁 代码结构
+## 📁 文件夹内容
+
+- curve_fitting.ipynb：完成该项目的python代码
+- output.png：结果图
+- NN1551.png：该项目用到的神经网络的示意图
+- drawNN1551.tex：绘制示意图的latex代码
+- NNBJ.pdf：个人学习笔记（中文）
 
 ---
 
