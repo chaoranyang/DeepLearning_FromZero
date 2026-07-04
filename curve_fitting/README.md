@@ -2,18 +2,20 @@
 
 ![任务效果](output.png)
 
-本项目使用纯 NumPy 实现了一个多层全连接神经网络，**不依赖任何深度学习框架**（如 PyTorch、TensorFlow）。通过反向传播（Backpropagation）和批量梯度下降（Batch Gradient Descent）训练网络，用于拟合带噪声的二次函数 $y = x^2$ ，旨在展示神经网络的拟合能力与底层实现细节。
+本项目先使用纯 NumPy 实现了一个多层全连接神经网络，**不依赖任何深度学习框架**（如 PyTorch、TensorFlow）。通过反向传播（Backpropagation）和批量梯度下降（Batch Gradient Descent）训练网络，用于拟合带噪声的二次函数 $y = x^2$ ，旨在完全**打开“黑箱”**，展示神经网络的拟合能力与底层实现细节。
+
+随后使用 **PyTorch** 重写了相同的网络结构、训练策略和数据生成过程，并利用 GPU 加速（支持 CPU 回退）。两种实现均得到几乎一致的训练损失和拟合曲线，可作为学习神经网络底层原理与框架使用的对比参考。
 
 ---
 
 ## 📁 文件夹内容
 
 - curve_fitting.ipynb：完成该项目的python代码
-- output.png：结果图
+- output.png：numpy结果图、 output_torch.png：Pytorch结果图
 - NN1551.png：该项目用到的神经网络的示意图
 - drawNN1551.tex：绘制示意图的latex代码
 - NNBJ.pdf：个人学习笔记（中文）
-
+- CurveFitting_torch.py 用pytorch重写该项目的代码
 ---
 
 ## 📌 任务介绍
@@ -164,14 +166,18 @@ $$
 - Python 3.x
 - NumPy
 - Matplotlib
+- 额外依赖（PyTorch 版本）PyTorch 1.8+（并支持 CUDA 设备）
 
 ### 运行方式
 
 ipynb文件，下载后在Jupyter 或 IDE 中运行
+py文件，下载后在 IDE 运行或 直接使用终端 
 
 ## 📊 结果展示
 
-训练 3000 个 epoch 后，网络能够较好地从带噪数据中恢复出 $y = x^2$ 的曲线，损失稳定下降至较低水平。预测曲线（红色）与真实曲线（绿色）基本重合，证明了神经网络的拟合能力。
+训练 3000 个 epoch 后，网络能够较好地从带噪数据中恢复出 $y = x^2$ 的曲线，损失稳定下降至较低水平。预测曲线（红色）与真实曲线（绿色）基本重合，证明了神经网络的拟合能力。纯numpy结果见本README最开头的图片，以下为Pytorch的结果图。
+
+![torchGPU](output_torch.png)
 
 *（运行代码后即可看到可视化结果）*
 
