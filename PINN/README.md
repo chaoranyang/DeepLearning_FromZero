@@ -97,15 +97,26 @@ $$
 - 通过 `torch.autograd.grad` 计算一阶时间导数 $\Theta_\tau$ 和二阶空间导数 $\Theta_{XX}, \Theta_{YY}$ （二阶导通过对一阶导再次求导获得）。
 - 构造热源指示函数 `region` ：将 $(X,Y)$ 映射回物理坐标，使用逻辑运算判断是否落在四个角区域内，转换为浮点张量（0 或 1）。
 - 计算无量纲 PDE 残差：
-  $$ R = \Theta_\tau - \left( \frac{\alpha t_{\text{ref}}}{L_x^2} \Theta_{XX} + \frac{\alpha t_{\text{ref}}}{L_y^2} \Theta_{YY} \right) - Q_{\text{nondim}} \cdot \text{region} $$
+  
+$$
+R = \Theta_\tau - \left( \frac{\alpha t_{\text{ref}}}{L_x^2} \Theta_{XX} + \frac{\alpha t_{\text{ref}}}{L_y^2} \Theta_{YY} \right) - Q_{\text{nondim}} \cdot \text{region}
+$$
 
 ### 3.5 损失函数（函数 `compute_losses`）
 - **PDE 损失**：残差的加权均方误差，权重 $w(\tau) = 1 + 10 \exp(-\tau / 0.1)$ （时间因果权重，使早期时间点贡献更大）：
-  $$ L_{\text{PDE}} = \frac{1}{N_f} \sum_{i=1}^{N_f} w(\tau_i) \cdot R_i^2 $$
+
+$$ L_{\text{PDE}} = \frac{1}{N_f} \sum_{i=1}^{N_f} w(\tau_i) \cdot R_i^2 $$
+
 - **初始条件损失**：均方误差乘以权重 $\lambda_{IC}$ ：
-  $$ L_{\text{IC}} = \lambda_{IC} \cdot \frac{1}{N_{ic}} \sum_{j=1}^{N_{ic}} \left( \Theta_{\text{pred}}(X_{ic,j}, Y_{ic,j}, 0) - \Theta_{\text{init}} \right)^2 $$
+  
+$$ L_{\text{IC}} = \lambda_{IC} \cdot \frac{1}{N_{ic}} \sum_{j=1}^{N_{ic}} \left( \Theta_{\text{pred}}(X_{ic,j}, Y_{ic,j}, 0) - \Theta_{\text{init}} \right)^2 $$
+
 - **边界条件损失**：均方误差乘以权重 $\lambda_{BC}$ ：
-  $$ L_{\text{BC}} = \lambda_{BC} \cdot \frac{1}{N_{bc}} \sum_{k=1}^{N_{bc}} \left( \Theta_{\text{pred}}(X_{bc,k}, Y_{bc,k}, \tau_{bc,k}) - 0 \right)^2 $$
+  
+$$ 
+L_{\text{BC}} = \lambda_{BC} \cdot \frac{1}{N_{bc}} \sum_{k=1}^{N_{bc}} \left( \Theta_{\text{pred}}(X_{bc,k}, Y_{bc,k}, \tau_{bc,k}) - 0 \right)^2 
+$$
+
 - 总损失： $L = L_{\text{PDE}} + L_{\text{IC}} + L_{\text{BC}}$ 。函数同时返回总损失及各分量（用于打印）。
 
 ### 3.6 训练流程（Adam + L‑BFGS）
@@ -124,7 +135,9 @@ $$
 
 对于每一个 PDE 配点 $(X_i, Y_i, \tau_i)$ ，神经网络预测 $\Theta_i$ 代入无量纲控制方程后得到残差 $R_i$ ：
 
-$$ R_i = \frac{\partial \Theta}{\partial \tau}\bigg|_{(X_i,Y_i,\tau_i)} - \left[ \frac{\alpha t_{\text{ref}}}{L_x^2} \frac{\partial^2 \Theta}{\partial X^2}\bigg|_{(X_i,Y_i,\tau_i)} + \frac{\alpha t_{\text{ref}}}{L_y^2} \frac{\partial^2 \Theta}{\partial Y^2}\bigg|_{(X_i,Y_i,\tau_i)} \right] - Q_{\text{nondim}} \cdot \mathbf{1}_{\Omega_h}(X_i,Y_i) $$
+$$ 
+R_i = \frac{\partial \Theta}{\partial \tau}\bigg|_{(X_i,Y_i,\tau_i)} - \left[ \frac{\alpha t_{\text{ref}}}{L_x^2} \frac{\partial^2 \Theta}{\partial X^2}\bigg|_{(X_i,Y_i,\tau_i)} + \frac{\alpha t_{\text{ref}}}{L_y^2} \frac{\partial^2 \Theta}{\partial Y^2}\bigg|_{(X_i,Y_i,\tau_i)} \right] - Q_{\text{nondim}} \cdot \mathbf{1}_{\Omega_h}(X_i,Y_i) 
+$$
 
 其中 $\mathbf{1}_{\Omega_h}$ 为热源指示函数（在四个方形热源区域内为 1，否则为 0）。  
 为了加速早期瞬态过程的学习，引入时间因果权重 $w(\tau_i)$ ：
