@@ -12,7 +12,9 @@
 
 设物理温度场为 $u(x,y,t)$ ，其中 $(x,y) \in [0, L_x] \times [0, L_y]$ ，时间 $t \in [0, t_{\text{ref}}]$ 。控制方程为带热源的非齐次热传导方程：
 
-$$ \frac{\partial u}{\partial t} = \alpha \left( \frac{\partial^2 u}{\partial x^2} + \frac{\partial^2 u}{\partial y^2} \right) + Q \cdot \mathbf{1}_{\Omega_h}(x,y) $$
+$$ 
+\frac{\partial u}{\partial t} = \alpha \left( \frac{\partial^2 u}{\partial x^2} + \frac{\partial^2 u}{\partial y^2} \right) + Q \cdot \mathbf{1}_{\Omega_h}(x,y) 
+$$
 
 其中 $\alpha$ 为热扩散系数（常数）， $Q$ 为热源强度（单位：K/s）， $\mathbf{1}_{\Omega_h}$ 为热源区域指示函数。热源区域 $\Omega_h$ 由四个尺寸为 $size \times size$ 的方形区域组成，分别布置在四个角附近，距离左右边界的间隙为 $gapx$ ，距离上下边界的间隙为 $gapy$ 。具体地，四个角区域的物理坐标范围为：
 
@@ -22,30 +24,50 @@ $$ \frac{\partial u}{\partial t} = \alpha \left( \frac{\partial^2 u}{\partial x^
 - 右上： $x \in [L_x - gapx - size, L_x - gapx]$ ， $y \in [L_y - gapy - size, L_y - gapy]$
 
 边界条件（四边恒温，相对于环境温度为 0）：
-$$ u(0,y,t) = u(L_x,y,t) = u(x,0,t) = u(x,L_y,t) = 0 $$
+
+$$ 
+u(0,y,t) = u(L_x,y,t) = u(x,0,t) = u(x,L_y,t) = 0 
+$$
 
 初始条件（均匀高温）：
-$$ u(x,y,0) = u_0 \quad (u_0 = 15) $$
+
+$$ 
+u(x,y,0) = u_0 \quad (u_0 = 15) 
+$$
 
 ### 2.2 无量纲化
 
 定义特征温度 $U_{\text{ref}}$ 和特征时间 $t_{\text{ref}}$ 如下：
 
-$$ U_{\text{ref}} = \frac{Q L_x L_y}{\alpha} , \qquad t_{\text{ref}} = 80 \ \text{s} $$
+$$ 
+U_{\text{ref}} = \frac{Q L_x L_y}{\alpha} , \qquad t_{\text{ref}} = 80 \ \text{s} 
+$$
 
 引入无量纲变量：
-$$ \Theta = \frac{u}{U_{\text{ref}}} , \quad X = \frac{x}{L_x} , \quad Y = \frac{y}{L_y} , \quad \tau = \frac{t}{t_{\text{ref}}} $$
+
+$$ 
+\Theta = \frac{u}{U_{\text{ref}}} , \quad X = \frac{x}{L_x} , \quad Y = \frac{y}{L_y} , \quad \tau = \frac{t}{t_{\text{ref}}} 
+$$
 
 则无量纲控制方程为：
-$$ \frac{\partial \Theta}{\partial \tau} = \frac{\alpha t_{\text{ref}}}{L_x^2} \frac{\partial^2 \Theta}{\partial X^2} + \frac{\alpha t_{\text{ref}}}{L_y^2} \frac{\partial^2 \Theta}{\partial Y^2} + Q_{\text{nondim}} \cdot \mathbf{1}_{\Omega_h}(X,Y) $$
+
+$$ 
+\frac{\partial \Theta}{\partial \tau} = \frac{\alpha t_{\text{ref}}}{L_x^2} \frac{\partial^2 \Theta}{\partial X^2} + \frac{\alpha t_{\text{ref}}}{L_y^2} \frac{\partial^2 \Theta}{\partial Y^2} + Q_{\text{nondim}} \cdot \mathbf{1}_{\Omega_h}(X,Y) 
+$$
 
 其中无量纲热源强度 $Q_{\text{nondim}} = \frac{Q t_{\text{ref}}}{U_{\text{ref}}}$ 。在本代码的物理参数下（ $L_x=2.0,\ L_y=1.0,\ \alpha=0.05,\ Q=5.0$ ），计算得 $U_{\text{ref}} = \frac{5.0 \times 2.0 \times 1.0}{0.05} = 200$ ， $Q_{\text{nondim}} = \frac{5.0 \times 80}{200} = 2.0$ 。初始无量纲温度 $\Theta_{\text{init}} = \frac{u_0}{U_{\text{ref}}} = \frac{15}{200} = 0.075$ ，代码中 `init_nondim = init_temp / U_ref` 得到相同值。
 
 边界条件在无量纲形式下为：
-$$ \Theta(0,Y,\tau) = \Theta(1,Y,\tau) = \Theta(X,0,\tau) = \Theta(X,1,\tau) = 0 $$
+
+$$ 
+\Theta(0,Y,\tau) = \Theta(1,Y,\tau) = \Theta(X,0,\tau) = \Theta(X,1,\tau) = 0 
+$$
 
 初始条件为：
-$$ \Theta(X,Y,0) = \Theta_{\text{init}} $$
+
+$$ 
+\Theta(X,Y,0) = \Theta_{\text{init}} 
+$$
 
 热源区域在无量纲坐标下的判定方式为：首先将 $(X,Y)$ 映射回物理坐标 $(x = X L_x, \ y = Y L_y)$ ，再与上述四个物理区域比较，生成指示函数值（热源内为 1，否则为 0）。
 
