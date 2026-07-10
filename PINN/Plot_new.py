@@ -3,6 +3,10 @@ import torch.nn as nn
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
+import imageio_ffmpeg   # <--- 如果没有，需要pip安装
+
+# 让 matplotlib 找到 ffmpeg
+plt.rcParams['animation.ffmpeg_path'] = imageio_ffmpeg.get_ffmpeg_exe()
 
 # ------------------------------
 # 1. 加载模型和参数
@@ -52,8 +56,8 @@ Y = Y_phys / Ly
 X_flat = torch.tensor(X.flatten(), dtype=torch.float32).unsqueeze(1).to(device)
 Y_flat = torch.tensor(Y.flatten(), dtype=torch.float32).unsqueeze(1).to(device)
 
-# 时间帧：模拟物理时间从 0 到 t_ref 秒，也可以改为 0~t_ref
-t_phys_frames = np.linspace(0, 50.0, 250)  # 总帧数200
+# 时间帧：模拟物理时间从 0 到 50.0 秒，也可以改为 0~t_ref
+t_phys_frames = np.linspace(0, 50.0, 200)  # 总帧数200
 
 # ------------------------------
 # 3. 制作动画（动态色标）
@@ -92,7 +96,7 @@ def update(frame):
 # interval：帧之间的延迟（毫秒）
 ani = animation.FuncAnimation(fig, update, frames=len(t_phys_frames), interval=200, blit=False)
 
-# 保存 GIF
+# 保存MP4
 # fps （每秒帧数）越小，动画播放越慢，总时长越长,这种方式文件大小不变（因为帧数没变），只是每帧停留的时间变长了
-ani.save('output.gif', writer='pillow', fps=10)
+ani.save('output.mp4', writer='ffmpeg', fps=10,dpi=80)
 print("动画已保存为 output.gif")
