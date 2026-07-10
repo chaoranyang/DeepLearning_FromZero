@@ -1,6 +1,9 @@
 # 基于 PINN 的二维瞬态热传导问题求解
 
-
+<video autoplay loop muted playsinline width="100%">
+  <source src="https://raw.githubusercontent.com/chaoranyang/DeepLearning_FromZero/main/PINN/output.mp4" type="video/mp4">
+  您的浏览器不支持视频播放，请升级浏览器。
+</video>
 
 ## 1. 项目简介（停留在此并稍等以加载动画📊）
 
