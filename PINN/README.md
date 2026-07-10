@@ -15,7 +15,7 @@
 | `Plot_new.py` | 后处理与可视化脚本，输出动态演化 GIF 动画。 |
 | `pinn_model_nondim.pkl` | 训练完成后保存的模型权重及无量纲参数 |
 | `README.md` | 项目说明文档（即本文档） |
-| `output.gif` | 由 `Plot_new.py` 生成的温度场演化动画 |
+| `output.mp4` | 由 `Plot_new.py` 生成的温度场演化动画 |
 
 用户可按顺序先运行 `ThermoConduct_new.py` 进行训练（约需二十分钟，取决于硬件配置），再运行 `Plot_new.py` 生成可视化结果。所有文件均位于同一目录下，无需额外配置路径。
 
@@ -225,7 +225,7 @@ $$ L = L_{\text{PDE}} + L_{\text{IC}} + L_{\text{BC}} $$
 定义需要可视化的物理时间序列（例如从 0 到 50.0 秒，共 200 帧）。对于每一帧，将当前物理时间 $t_{\text{phys}}$ 转换为无量纲时间 $\tau = t_{\text{phys}} / t_{\text{ref}}$ ，并与网格的 $(X, Y)$ 拼接成形状为 $(N_{\text{grid}}, 3)$ 的输入张量，一次性送入模型得到所有网格点上的 $\Theta$ 预测值。将 $\Theta$ 乘以 $U_{\text{ref}}$ 即可得到物理温度场 $u$ 。
 
 ### 6.4 动画生成
-利用 `matplotlib` 的 `contourf` 绘制每一帧的温度云图，并使用 `animation.FuncAnimation` 将这些帧组合成动态动画。色标范围固定（例如 0 至 4.0 K），以便于对比不同时刻的温度分布。最终动画可通过 `ani.save` 保存为 GIF 格式（使用 Pillow 驱动），帧率及间隔可调。该过程完全在 `torch.no_grad()` 上下文中进行，避免梯度计算开销。
+利用 `matplotlib` 的 `contourf` 绘制每一帧的温度云图，并使用 `animation.FuncAnimation` 将这些帧组合成动态动画。色标范围固定（例如 0 至 4.0 K），以便于对比不同时刻的温度分布。最终动画可通过 `ani.save` 保存为 mp4 格式（使用 ffmpeg 驱动），帧率及间隔可调。该过程完全在 `torch.no_grad()` 上下文中进行，避免梯度计算开销。
 
 ### 6.5 后处理要点
 - **反无量纲化**：物理温度 $u = \Theta \cdot U_{\text{ref}}$ ，物理时间 $t = \tau \cdot t_{\text{ref}}$ 。此步骤在绘图前完成，使输出结果具有物理意义。
@@ -241,7 +241,7 @@ $$ L = L_{\text{PDE}} + L_{\text{IC}} + L_{\text{BC}} $$
   - PyTorch ≥ 1.8.0（支持自动微分和 GPU 加速）
   - NumPy
   - Matplotlib（用于后处理可视化）
-  - Pillow（用于保存 GIF 动画）
+  - ffmpeg（用于保存 mp4 动画）
 - **硬件建议**：CUDA 兼容的 GPU 可显著加速训练，若无则自动回退至 CPU。
 
 可直接运行主训练脚本（所有代码均在同一个文件中），无需额外配置。训练过程中会生成模型权重文件 `pinn_model_nondim.pkl` ，后处理脚本需与该文件位于同一目录。
