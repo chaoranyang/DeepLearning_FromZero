@@ -1,11 +1,9 @@
 # 基于 PINN 的二维瞬态热传导问题求解
 
-<p align="center">
-  <video src="https://raw.githubusercontent.com/chaoranyang/DeepLearning_FromZero/main/PINN/output.mp4" 
-         autoplay loop muted playsinline 
-         style="max-width: 100%; height: auto;">
-  </video>
-</p>
+
+
+https://github.com/user-attachments/assets/1efcad79-22a1-43bd-a397-f26c0c7b92b7
+
 
 ## 1. 项目简介（停留在此并稍等以加载动画📊）
 
